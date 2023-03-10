@@ -1,70 +1,54 @@
-# python-clean-architecture
+## python-clean-architecture
 
-Python code structure for developing using clean architecture
+#### Seba Ituarte - This structure will help in the project building using python and fastapi to isolate the dependencies and have a cleaner code
 
-[![Main CI (Prod)](https://github.com/sebajax/python-clean-architecture/actions/workflows/main.yml/badge.svg)](https://github.com/sebajax/python-clean-architecture/actions/workflows/main.yml)
+#### This api uses 3-layer Python - FastAPI Framework
 
-## How to run app
+![alt text](./fastapi.png)
 
-```
-uvicorn main:app --reload or docker-compose up
-```
+### This app uses conventional commits
 
-## Docker compose for develop
+[Conventional commits url](https://www.conventionalcommits.org/en/v1.0.0/)
 
-1.  Install the dependencies that the project has using this command (Only fisrt time or when re-using):
+### Docker usage
 
-```
-docker-compose --file docker/docker-compose.yml run --rm python-clean-architecture npm install
-```
+    Build server
+        docker-compose -p python-clean-architecture build
+    
+    Start server
+        docker-compose up -d
 
-2.  To run your project run this command:
+    Stop server
+        docker-compose down
 
-```
-docker-compose --file docker/docker-compose.yml up -d
-```
+### Standalone usage
 
-3.  To remove the docker execution run this command:
+    uvicorn app.main:app --reload
 
-```
-docker-compose --file docker/docker-compose.yml down
-```
+### Poetry usage
 
-## Docker using Makefile
+    Add a new dependency
+        poetry add dependency_name / poetry add fastapi
 
-To speed up the execution of commands, the use of Makefile is introduced, which has the following useful commands:
+    Install all dependencies in pyproject.toml
+        poetry install
 
-1. Run project in detached mode:
-   ```
-   make start
-   ```
-2. Run project not detached:
-   ```
-   make up
-   ```
-3. Build a image:
-   ```
-   make build
-   ```
-4. Run tests:
-   ```
-   make test
-   ```
-5. Install dependecies:
-   ```
-   make install
-   ```
-6. For help and more commands:
-   ```
-   make help
-   ```
+    To export dependecies into requirements.txt
+        poetry export --without-hashes --format=requirements.txt > requirements.txt
 
-Make sure you have `make` installed!
+### Testing
 
-## Testing the api
+    To run unit testing
+        python -m pytest app/tests/
 
-    coverage run --source app/ -m pytest
+    To run unit testing coverage
+        python -m pytest --cov app/tests/
 
-    coverage report -m
+### Database migration script
 
-    coverage html
+    To run the script using alembic
+        alembic upgrade head
+
+### Environment variables
+
+To modify/add configuration via environment variables, use the `.env` file, which contains basic app configuration.

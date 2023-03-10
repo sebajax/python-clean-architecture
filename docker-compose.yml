@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  server:
+    container_name: ${PROJECT_NAME}-app
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/code
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  db:
+    image: postgres:14.6-alpine
+    container_name: ${PROJECT_NAME}-db
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      TZ: 'America/Santiago'
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}' ]
+      interval: 5s
+      timeout: 1s
+      retries: 5
+  cache:
+    image: redis:7.0.5-alpine
+    container_name: ${PROJECT_NAME}-cache
+    ports:
+      - '${CACHE_PORT}:6379'
+    command: redis-server --requirepass ${CACHE_PASSWORD}
+    environment:
+      REDIS_PASSWORD: ${CACHE_PASSWORD}
+    restart: always
+    healthcheck:
+      test: [ 'CMD', 'redis-cli', 'ping' ]
+      interval: 5s
+      timeout: 1s
+      retries: 5
+volumes:
+  pgdata:
+    name: ${DB_NAME}
