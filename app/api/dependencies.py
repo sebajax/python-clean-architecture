@@ -15,7 +15,7 @@ from app.services.create_user_service import CreateUserService
 
 class Container(containers.DeclarativeContainer):
     # wiring configuration
-    wiring_config = containers.WiringConfiguration(modules=["app.api.routes.users_route"])
+    wiring_config = containers.WiringConfiguration(packages=["app.api.routes"])
 
     # core
     db_provider = providers.Singleton(
