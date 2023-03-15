@@ -8,7 +8,7 @@ from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
-from app.api.dependencies import Container
+from app.api.application_container import ApplicationContainer
 from app.schemas.user_schema import CreateUserSchema
 from app.services.create_user_service import CreateUserService
 from app.services.exception_service import ServiceException
@@ -25,7 +25,9 @@ router = APIRouter()
 async def create_user(
         user: CreateUserSchema,
         # admin: UserSchema = Depends(Provide[Container.auth_provider.provided.get_current_user_admin]),
-        create_user_service: CreateUserService = Depends(Provide[Container.create_user_service_provider])
+        create_user_service: CreateUserService = Depends(
+            Provide[ApplicationContainer.service_container.create_user_service_provider]
+        ),
 ) -> ResponseService:
     """
     api insert a new user
@@ -50,7 +52,6 @@ async def create_user(
             detail=service_exception.detail
         ) from service_exception
     except Exception as error:
-        logger.error("ERROR ENTRE ACA")
         print(error)
         logger.error(error)
         raise HTTPException(

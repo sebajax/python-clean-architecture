@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.api import api_router
-from app.api.dependencies import Container
+from app.api.application_container import ApplicationContainer
 from app.core.config import get_settings
 
 # setup loggers
@@ -17,8 +17,13 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title=f"{get_settings().PROJECT_NAME}", version=f"{get_settings().VERSION}")
 
 # wiring container app dependencies
-container = Container()
-app.container = container
+application_container = ApplicationContainer()
+application_container.wire(
+    modules=[
+        "app.api.routes.users_route",
+    ]
+)
+app.container = application_container
 
 # Set all CORS enabled origins
 app.add_middleware(
