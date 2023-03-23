@@ -52,7 +52,6 @@ async def create_user(
             detail=service_exception.detail
         ) from service_exception
     except Exception as error:
-        print(error)
         logger.error(error)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
