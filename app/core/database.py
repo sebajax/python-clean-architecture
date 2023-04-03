@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class Database:
     """
-    class to handle tha database connection
+    class to handle database connection
     """
 
     def __init__(self, db_url: str) -> None:
